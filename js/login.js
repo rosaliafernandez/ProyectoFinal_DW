@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Verificar si ya hay una sesión activa
+    const sesionActiva = localStorage.getItem('sesionActiva');
+    if (sesionActiva === 'true') {
+        // Si ya está logueado, redirigir al index
+        window.location.href = "index.html";
+        return;
+    }
     
     // Agarrar los elementos del HTML
     const loginForm = document.getElementById("loginForm");
@@ -14,10 +21,15 @@ document.addEventListener("DOMContentLoaded", function() {
         const validarUsuario = usuarioInput.value.trim() !== "";
         const validarContrasena = contrasenaInput.value.trim() !== "";
 
-        // Si ambos campos están llenos, redirigir a index.html
+        // Si ambos campos están llenos, crear sesión y redirigir
         if (validarUsuario && validarContrasena) {
             // Ocultar mensaje de error por si estaba visible
             mensajeError.style.display = "none";
+            
+            // Guardar la sesión y datos del usuario
+            localStorage.setItem('sesionActiva', 'true');
+            localStorage.setItem('usuarioLogueado', usuarioInput.value.trim());
+            localStorage.setItem('fechaLogin', new Date().toISOString());
             
             // Redirigir a la página principal
             window.location.href = "index.html";
