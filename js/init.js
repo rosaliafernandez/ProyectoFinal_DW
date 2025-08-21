@@ -38,4 +38,7 @@ let getJSONData = function(url){
         hideSpinner();
         return result;
     });
+document.addEventListener("DOMContentLoaded", function() {
+    if (!localStorage.getItem("usuario") && !window.location.href.includes("login.html")) {
+        window.location.href = "login.html"
 }
