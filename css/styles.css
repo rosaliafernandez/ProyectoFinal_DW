@@ -188,3 +188,37 @@ a.custom-card:hover {
 .checked {
   color: orange;
 }
+
+/* Estilo mejorado para las tarjetas de productos */
+.custom-card {
+    background-color: #e0e0e0 !important;
+    border: none !important;
+    border-radius: 24px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Nombre del producto en negrita */
+.custom-card .card-title {
+    font-weight: bold !important;
+    color: #000 !important;
+    font-size: 1.2rem;
+}
+
+/* Descripción y otros textos */
+.custom-card .card-text,
+.custom-card strong,
+.custom-card small {
+    color: #000 !important;
+}
+
+/* Imagen del producto: más pequeña, centrada y con espacio */
+.custom-card .card-img-top {
+    width: 100% !important;
+    height: 180px !important;           /* Altura fija más pequeña */
+    object-fit: cover !important;       /* No deforma la imagen */
+    margin: 1rem auto 0.8rem !important; /* Espacio arriba y abajo, centrada */
+    padding: 0 1rem !important;         /* Espacio en los costados (izquierda y derecha) */
+    display: block !important;
+}
