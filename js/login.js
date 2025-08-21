@@ -6,7 +6,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const contrasenaInput = document.getElementById("contrasena");
     const mensajeError = document.getElementById("mensajeError");
 
-    // Escuchar el submit del formulario
+    const sesionActiva = localStorage.getItem('sesionActiva');
+if (sesionActiva === 'true') {
+    // Si ya está logueado, redirigir al index
+    window.location.href = "index.html";
+    return;
+}
+   
+
     loginForm.addEventListener("submit", function(e) {
         e.preventDefault(); // Evitar que el form se envíe automáticamente
 
@@ -32,6 +39,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (mensajeError.style.display === "block") {
             mensajeError.style.display = "none";
         }
+        
+        localStorage.setItem('sesionActiva', 'true');
+localStorage.setItem('usuarioLogueado', usuarioInput.value.trim());
+localStorage.setItem('fechaLogin', new Date().toISOString());
     });
 
     contrasenaInput.addEventListener("input", function() {
@@ -39,4 +50,11 @@ document.addEventListener("DOMContentLoaded", function() {
             mensajeError.style.display = "none";
         }
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+    if (!localStorage.getItem("usuario") && !window.location.href.includes("login.html")) {
+        alert("No has iniciado sesión. Serás redirigido al login.");
+        window.location.href = "login.html";
+    }
+});
 });

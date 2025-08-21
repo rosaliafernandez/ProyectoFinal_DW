@@ -40,11 +40,52 @@ let getJSONData = function(url){
     });
 
 
+// Funciones de autenticación
+function verificarSesion() {
+    const sesionActiva = localStorage.getItem('sesionActiva');
+    
+    // Si no hay sesión activa, redirigir al login
+    if (sesionActiva !== 'true') {
+        window.location.href = "login.html";
+        return false;
+    }
+    
+    return true;
+}
+
+function cerrarSesion() {
+    localStorage.removeItem('sesionActiva');
+    localStorage.removeItem('usuarioLogueado');
+    localStorage.removeItem('fechaLogin');
+    window.location.href = "login.html";
+}
+
+function obtenerUsuarioLogueado() {
+    if (localStorage.getItem('sesionActiva') === 'true') {
+        return {
+            usuario: localStorage.getItem('usuarioLogueado'),
+            fechaLogin: localStorage.getItem('fechaLogin')
+        };
+    }
+    return null;
+}
+
+function mostrarUsuarioEnNavbar() {
+    const datosUsuario = obtenerUsuarioLogueado();
+    if (datosUsuario) {
+       
+        const navbarUser = document.querySelector('.navbar-user');
+        if (navbarUser) {
+            navbarUser.textContent = `Hola, ${datosUsuario.usuario}`;
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
-    if (!localStorage.getItem("usuario") && !window.location.href.includes("login.html")) {
-        window.location.href = "login.html"
-            }
+
+    if (!window.location.pathname.includes('login.html')) {
+        verificarSesion();
+        mostrarUsuarioEnNavbar();
+    }
 });
-
-
 }
