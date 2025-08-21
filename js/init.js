@@ -7,85 +7,100 @@ const CART_INFO_URL = "https://japceibal.github.io/emercado-api/user_cart/";
 const CART_BUY_URL = "https://japceibal.github.io/emercado-api/cart/buy.json";
 const EXT_TYPE = ".json";
 
-let showSpinner = function(){
-  document.getElementById("spinner-wrapper").style.display = "block";
+// Función para mostrar spinner
+function showSpinner() {
+const spinner = document.getElementById("spinner-wrapper");
+if (spinner) spinner.style.display = "block";
 }
 
-let hideSpinner = function(){
-  document.getElementById("spinner-wrapper").style.display = "none";
+// Función para ocultar spinner
+function hideSpinner() {
+const spinner = document.getElementById("spinner-wrapper");
+if (spinner) spinner.style.display = "none";
 }
 
-let getJSONData = function(url){
-    let result = {};
-    showSpinner();
-    return fetch(url)
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      }else{
-        throw Error(response.statusText);
+// Función para hacer peticiones a la API
+function getJSONData(url) {
+  let result = {};
+  showSpinner();
+  return fetch(url)
+.then(response => {
+if (response.ok) {
+return response.json();
+      } else {
+throw Error(response.statusText);
       }
     })
-    .then(function(response) {
-          result.status = 'ok';
-          result.data = response;
-          hideSpinner();
-          return result;
+.then(function (response) {
+result.status = 'ok';
+result.data = response;
+      hideSpinner();
+      return result;
     })
-    .catch(function(error) {
-        result.status = 'error';
-        result.data = error;
-        hideSpinner();
-        return result;
+.catch(function (error) {
+result.status = 'error';
+result.data = error;
+      hideSpinner();
+      return result;
     });
+}
 
+// --- FUNCIONES DE AUTENTICACIÓN (fuera de getJSONData) ---
 
-// Funciones de autenticación
+// Verifica si hay sesión activa
 function verificarSesion() {
-    const sesionActiva = localStorage.getItem('sesionActiva');
-    
-    // Si no hay sesión activa, redirigir al login
-    if (sesionActiva !== 'true') {
-        window.location.href = "login.html";
-        return false;
-    }
-    
-    return true;
+const sesionActiva = localStorage.getItem('sesionActiva');
+if (sesionActiva !== 'true' && !window.location.pathname.includes('login.html')) {
+window.location.href = "login.html";
+    return false;
+  }
+  return true;
 }
 
+// Cierra la sesión
 function cerrarSesion() {
-    localStorage.removeItem('sesionActiva');
-    localStorage.removeItem('usuarioLogueado');
-    localStorage.removeItem('fechaLogin');
-    window.location.href = "login.html";
+localStorage.removeItem('sesionActiva');
+localStorage.removeItem('usuarioLogueado');
+localStorage.removeItem('fechaLogin');
+window.location.href = "login.html";
 }
 
+// Obtiene datos del usuario
 function obtenerUsuarioLogueado() {
-    if (localStorage.getItem('sesionActiva') === 'true') {
-        return {
-            usuario: localStorage.getItem('usuarioLogueado'),
-            fechaLogin: localStorage.getItem('fechaLogin')
-        };
-    }
-    return null;
+if (localStorage.getItem('sesionActiva') === 'true') {
+    return {
+usuario: localStorage.getItem('usuarioLogueado'),
+fechaLogin: localStorage.getItem('fechaLogin')
+    };
+  }
+  return null;
 }
 
+// Muestra el nombre del usuario en el navbar
 function mostrarUsuarioEnNavbar() {
-    const datosUsuario = obtenerUsuarioLogueado();
-    if (datosUsuario) {
-       
-        const navbarUser = document.querySelector('.navbar-user');
-        if (navbarUser) {
-            navbarUser.textContent = `Hola, ${datosUsuario.usuario}`;
-        }
+  const datosUsuario = obtenerUsuarioLogueado();
+  if (datosUsuario) {
+const usuarioNombre = document.getElementById("usuarioNombre");
+    if (usuarioNombre) {
+usuarioNombre.textContent = datosUsuario.usuario;
     }
+  }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+// Ejecutar al cargar la página
+document.addEventListener("DOMContentLoaded", function () {
+// Verificar sesión en todas las páginas excepto login.html
+if (!window.location.pathname.includes('login.html')) {
+    verificarSesion();
+    mostrarUsuarioEnNavbar();
+  }
 
-    if (!window.location.pathname.includes('login.html')) {
-        verificarSesion();
-        mostrarUsuarioEnNavbar();
-    }
+// Configurar botón de cerrar sesión
+const logoutBtn = document.getElementById("logout");
+  if (logoutBtn) {
+logoutBtn.addEventListener("click", function (e) {
+e.preventDefault();
+      cerrarSesion();
+    });
+  }
 });
-}
