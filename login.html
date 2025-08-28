@@ -38,13 +38,57 @@
     .field .form-control:focus + .floating-label,.field .form-control.has-value + .floating-label {
       opacity: 0;
     }
+
+    @media (min-width: 1200px) {
+      .login-box {
+        max-width: 400px;
+        margin-top: 120px;
+        padding: 40px;
+      }
+      .login-box h3 {
+        font-size: 1.8rem;;
+      }
+    }
+
+    @media (max-width: 1024px) and (min-width: 768px) {
+      .login-box {
+        max-width: 350px;
+        margin-top: 80px;
+        padding: 25px;
+      }
+      .login-box h3 {
+        font-size: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-box {
+        max-width: 100%;
+        margin: 30px 15px;
+        padding: 20px;
+        border-radius: 6px;
+      }
+      .login-box h3 {
+        font-size: 1.3rem;
+        text-align: center;
+      }
+      .form-control {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+      button.btn {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+    }
   </style>
 </head>
 
 <body>
   <main class="mt-5">
-    <div class="container">
-      <div class="login-box">
+    <div class="row justify-content-center">
+    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+      <div class="login-box p-4">
         <h3 class="text-center mb-4">Inicio de sesión</h3>
         <form id="loginForm" autocomplete="off" novalidate>
           <div class="field">
@@ -66,6 +110,7 @@
           Debe completar ambos campos.
         </div>
       </div>
+    </div>
     </div>
   </main>
   
