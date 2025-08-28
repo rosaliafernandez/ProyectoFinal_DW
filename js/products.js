@@ -7,21 +7,21 @@ function showProductsList(productsArray) {
         let priceToShow = `${product.cost} ${product.currency}`;
         let soldCountText = `${product.soldCount} vendidos`;
 
-        htmlContentToAppend += `
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 custom-card cursor-active" onclick="setProductID(${product.id})">
-                    <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}">
-                    <div class="card-body p-3">
-                        <h5 class="card-title">${product.name}</h5>
-                        <p class="card-text text-muted">${product.description}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong>${priceToShow}</strong>
-                            <small class="text-muted">${soldCountText}</small>
-                        </div>
-                    </div>
+       htmlContentToAppend += `
+    <div class="col"> <!-- Bootstrap se encarga del ancho -->
+        <div class="card h-100 shadow-sm border-0 rounded-3 custom-card cursor-active" onclick="setProductID(${product.id})">
+            <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}">
+            <div class="card-body p-3">
+                <h5 class="card-title">${product.name}</h5>
+                <p class="card-text text-muted">${product.description}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong>${product.cost} ${product.currency}</strong>
+                    <small class="text-muted">${product.soldCount} vendidos</small>
                 </div>
             </div>
-        `;
+        </div>
+    </div>
+`;
     }
 
     document.getElementById("products-container").innerHTML = htmlContentToAppend;
@@ -57,3 +57,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
