@@ -32,10 +32,32 @@ function setProductID(id) {
     window.location = "product-info.html";
 }
 
+// Desafiate
+let originalProductsArray = [];
+
+// Filtra filtra productos según texto de búsqueda, por nombre y descripción del producto en tiempo real - Desafiate
+function filterProducts(searchText) {
+    let cleanedSearchText = searchText.trim();
+
+    if (cleanedSearchText === "") {
+        showProductsList(originalProductsArray);
+        return;
+    }
+
+    let filteredProducts = originalProductsArray.filter(product => {
+        let nameMatch = product.name.toLowerCase().includes(cleanedSearchText.toLowerCase());
+        let descriptionMatch = product.description.toLowerCase().includes(cleanedSearchText.toLowerCase());
+        return nameMatch || descriptionMatch;
+    });
+
+    showProductsList(filteredProducts);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     showSpinner();
 
-    let catID = localStorage.getItem("catID") || 101;
+    // Obtiene el ID de la categoría desde el localStorage en lugar del valor fijo 101 - pauta 1
+    let catID = localStorage.getItem("catID");
 
     let url = PRODUCTS_URL + catID + ".json";
 
@@ -44,7 +66,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (resultObj.status === "ok") {
             let productsArray = resultObj.data.products;
+
+            // Muestra el nombre de la categoría en el encabezado
+            let categoryName = resultObj.data.catName;
+            document.getElementById("category-title").innerText = categoryName;
+
+            // Guarda el array original pora el bucador - Desafiate
+            originalProductsArray = productsArray;
+
             showProductsList(productsArray);
+
+            // Permite filtrado en tiempo real mientras el usuario escribe - Desafiate
+            document.getElementById("searchInput").addEventListener("input", (e) => {
+                filterProducts(e.target.value);
+            });
+
         } else {
             console.error("Error:", resultObj.data);
             document.getElementById("products-container").innerHTML = `
