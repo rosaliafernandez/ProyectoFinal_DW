@@ -44,13 +44,43 @@
       </div>
     </div>
   </nav>
-  <main>
-    <div class="container">
-      <div class="alert alert-danger text-center" role="alert">
-        <h4 class="alert-heading">Funcionalidad en desarrollo</h4>
+  <main class="pb-5 container">
+  <!-- Título dinámico -->
+  <div class="text-center p-4">
+    <h2 id="productTitle">Cargando...</h2>
+  </div>
+
+  <div class="row">
+    <!-- Carrusel de imágenes -->
+    <div class="col-md-6">
+      <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" id="carouselImages">
+          <!-- Las imágenes se cargarán con JavaScript -->
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Siguiente</span>
+        </button>
       </div>
     </div>
-  </main>
+
+    <!-- Detalles del producto -->
+    <div class="col-md-6">
+      <div class="card border-0">
+        <div class="card-body">
+          <h3 id="productPrice" class="mb-3"></h3>
+          <p class="card-text"><strong>Categoría:</strong> <span id="productCategory"></span></p>
+          <p class="card-text"><strong>Vendidos:</strong> <span id="productSoldCount"></span></p>
+          <p class="card-text" id="productDescription"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
   <footer class="text-muted">
     <div class="container">
       <p class="float-end">
