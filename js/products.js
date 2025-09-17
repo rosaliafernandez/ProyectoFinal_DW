@@ -1,30 +1,76 @@
-function showProductsList(productsArray) {
-    let htmlContentToAppend = "";
+let currentProductsArray = [ ];  
+let originalProductsArray=[];  // Para mantener la lista original sin cambios  
+const ORDER_ASC_BY_PRICE="PriceAsc"; 
+const ORDER_DESC_BY_PRICE =  "PriceDesc";   
+const ORDER_BY_PROD_COUNT= "Relevance"; 
+let currentSortCriteria   = undefined; 
+let minPrice= undefined;  
+let maxPrice =  undefined ;
 
-    for (let i = 0; i < productsArray.length; i++) {
-        let product = productsArray[i];
 
-        let priceToShow = `${product.cost} ${product.currency}`;
-        let soldCountText = `${product.soldCount} vendidos`;
+function sortProducts(criteria, array) {
+   let result=[]; 
+   if(criteria === ORDER_ASC_BY_PRICE) 
+   {  
+        result = array.sort(function(a,b){ 
+             return a.cost - b.cost; 
+        }); 
+   } else if(criteria=== ORDER_DESC_BY_PRICE) {
+       result = array.sort(function(a, b){ 
+         return b.cost - a.cost ; 
+       }); 
+   }  else if(criteria===ORDER_BY_PROD_COUNT) {
+        result= array.sort(function(a,b) {
+              return b.soldCount - a.soldCount; 
+        }); 
+   } 
 
-         htmlContentToAppend += `
-            <div class="col mb-4">
-             <div class="card h-100 shadow-sm border-0 rounded-3 custom-card cursor-active" onclick="setProductID(${product.id})">
-                    <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}">
-                    <div class="card-body p-3">
-                        <h5 class="card-title">${product.name}</h5>
-                        <p class="card-text text-muted">${product.description}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong>${product.cost} ${product.currency}</strong>
-                            <small class="text-muted">${product.soldCount} vendidos</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+   return result ; 
+} 
+
+
+function showProductsList( ) { 
+     let htmlContentToAppend="";  
+
+   for ( let i=0; i< currentProductsArray.length ; i++ ){ 
+        let product = currentProductsArray[i];  
+
+       if(((minPrice==undefined) || (minPrice!=undefined && parseInt(product.cost) >= minPrice)) && 
+           ((maxPrice == undefined) || (maxPrice!= undefined && parseInt(product.cost)<=maxPrice))) 
+       {
+            htmlContentToAppend+=`
+                <div class="col mb-4"> 
+                 <div class="card h-100 shadow-sm border-0 rounded-3 custom-card cursor-active" onclick="setProductID(${product.id})"> 
+                        <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}"> 
+                        <div class="card-body p-3"> 
+                            <h5 class="card-title">${product.name}</h5> 
+                            <p class="card-text text-muted">${product.description}</p> 
+                            <div class="d-flex justify-content-between align-items-center"> 
+                                <strong>${product.cost} ${product.currency}</strong> 
+                                <small class="text-muted">${product.soldCount} vendidos</small> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            `;  
+       } 
+   } 
+
 
     document.getElementById("products-container").innerHTML = htmlContentToAppend;
+}
+
+function sortAndShowProducts(sortCriteria, productsArray){
+    currentSortCriteria = sortCriteria;
+
+    if(productsArray != undefined){
+        currentProductsArray = productsArray;
+    }
+
+    currentProductsArray = sortProducts(currentSortCriteria, currentProductsArray);
+
+    //Muestro los productos ordenados
+    showProductsList();
 }
 
 function setProductID(id) {
@@ -43,8 +89,9 @@ document.addEventListener("DOMContentLoaded", function () {
         hideSpinner();
 
         if (resultObj.status === "ok") {
-            let productsArray = resultObj.data.products;
-            showProductsList(productsArray);
+            originalProductsArray = resultObj.data.products;
+            currentProductsArray = originalProductsArray;
+            showProductsList();
         } else {
             console.error("Error:", resultObj.data);
             document.getElementById("products-container").innerHTML = `
@@ -56,5 +103,46 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
         }
     });
-});
 
+    document.getElementById("sortAsc").addEventListener("click" , function() {
+      sortAndShowProducts(ORDER_ASC_BY_PRICE);  
+    });
+
+   document.getElementById("sortDesc").addEventListener("click",function(){
+        sortAndShowProducts( ORDER_DESC_BY_PRICE );
+   });
+
+    document.getElementById("sortByCount").addEventListener("click" ,  function( ){
+       sortAndShowProducts(ORDER_BY_PROD_COUNT);   
+    });
+
+     document.getElementById("clearRangeFilter").addEventListener("click", function() {
+         document.getElementById("rangeFilterPriceMin").value="";
+       document.getElementById("rangeFilterPriceMax").value = "";  
+
+        minPrice= undefined; 
+         maxPrice=undefined;  
+
+       showProductsList( ); 
+     });
+
+   document.getElementById("rangeFilterPriceBtn").addEventListener("click", function(){ 
+        //Obtengo el mínimo y máximo de los intervalos para filtrar  
+      minPrice =document.getElementById("rangeFilterPriceMin").value ; 
+        maxPrice=  document.getElementById("rangeFilterPriceMax").value;  
+
+       if ((minPrice != undefined) && (minPrice!="") && (parseInt(minPrice)) >=0 ) {
+           minPrice= parseInt(minPrice) ;
+       } else {
+          minPrice= undefined ;
+       }
+
+        if ((maxPrice!= undefined) && (maxPrice!="") && (parseInt(maxPrice))>=0 ){
+          maxPrice =parseInt(maxPrice);  
+        }  else {
+            maxPrice=undefined;  
+        }
+
+        showProductsList();  
+   }); 
+}); 
