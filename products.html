@@ -49,6 +49,21 @@
  <main class="pb-5 container">
   <!-- Título de la página -->
   <div class="text-center p-4">
+
+    <h2 id="category-title"></h2> <!-- Título dinámico para mostrar el nombre correcto de la categoría -->
+  </div>
+
+  <!-- Campo buscador para filtrar productos en tiempo real - Desafiate -->
+  <div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+      <div class="input-group">
+        <input type="search" class="form-control" id="searchInput" placeholder="Buscar productos...">
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor donde se cargarán los productos -->
+
     <h2>Autos</h2>
     <p class="lead" > Verás aquí todos los productos de la categoría seleccionada.</p> 
   </div>  
@@ -84,6 +99,7 @@
    </div>  
 
   <!-- Contenedor RESPONSIVO para productos -->
+
   <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4" id="products-container">
     <!-- Aquí se insertarán las tarjetas de productos dinámicamente -->
   </div>
