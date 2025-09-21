@@ -1,12 +1,13 @@
-let currentProductsArray = [ ];  
-let originalProductsArray=[];  // Para mantener la lista original sin cambios  
+let currentProductsArray = [];  
+let originalProductsArray= [];  // Para mantener la lista original sin cambios  
 const ORDER_ASC_BY_PRICE="PriceAsc"; 
 const ORDER_DESC_BY_PRICE =  "PriceDesc";   
-const ORDER_BY_PROD_COUNT= "Relevance"; 
-let currentSortCriteria   = undefined; 
+const ORDER_BY_PROD_COUNT = "Relevance"; 
+let currentSortCriteria = undefined; 
 let minPrice= undefined;  
-let maxPrice =  undefined ;
+let maxPrice = undefined ;
 
+let currentSearchText = "";
 
 function sortProducts(criteria, array) {
    let result=[]; 
@@ -28,6 +29,34 @@ function sortProducts(criteria, array) {
    return result ; 
 } 
 
+// FUNCIÓN PARA APLICAR TODOS LOS FILTROS JUNTOS
+function applyAllFilters() {
+    let filteredArray = [...originalProductsArray];
+    
+    if (currentSearchText !== "") {
+        filteredArray = filteredArray.filter(product => {
+            let nameMatch = product.name.toLowerCase().includes(currentSearchText.toLowerCase());
+            let descriptionMatch = product.description.toLowerCase().includes(currentSearchText.toLowerCase());
+            return nameMatch || descriptionMatch;
+        });
+    }
+
+    filteredArray = filteredArray.filter(product => {
+        return (minPrice==undefined || parseInt(product.cost) >= minPrice) && 
+           (maxPrice == undefined ||parseInt(product.cost)<=maxPrice)
+    });
+    
+
+    if(currentSortCriteria != undefined){
+        filteredArray = sortProducts(currentSortCriteria, filteredArray);
+    }
+
+    currentProductsArray = filteredArray;
+
+    //Muestro los productos ordenados
+    showProductsList();
+}
+
 
 function showProductsList( ) { 
      let htmlContentToAppend="";  
@@ -35,9 +64,6 @@ function showProductsList( ) {
    for ( let i=0; i< currentProductsArray.length ; i++ ){ 
         let product = currentProductsArray[i];  
 
-       if(((minPrice==undefined) || (minPrice!=undefined && parseInt(product.cost) >= minPrice)) && 
-           ((maxPrice == undefined) || (maxPrice!= undefined && parseInt(product.cost)<=maxPrice))) 
-       {
             htmlContentToAppend+=`
                 <div class="col mb-4"> 
                  <div class="card h-100 shadow-sm border-0 rounded-3 custom-card cursor-active" onclick="setProductID(${product.id})"> 
@@ -53,12 +79,12 @@ function showProductsList( ) {
                     </div> 
                 </div> 
             `;  
-       } 
+       }
+
+       document.getElementById("products-container").innerHTML = htmlContentToAppend;
    } 
 
 
-    document.getElementById("products-container").innerHTML = htmlContentToAppend;
-}
 
 function sortAndShowProducts(sortCriteria, productsArray){
     currentSortCriteria = sortCriteria;
@@ -66,11 +92,7 @@ function sortAndShowProducts(sortCriteria, productsArray){
     if(productsArray != undefined){
         currentProductsArray = productsArray;
     }
-
-    currentProductsArray = sortProducts(currentSortCriteria, currentProductsArray);
-
-    //Muestro los productos ordenados
-    showProductsList();
+    applyAllFilters();
 }
 
 function setProductID(id) {
@@ -78,28 +100,13 @@ function setProductID(id) {
     window.location = "product-info.html";
 }
 
-// Desafiate
-let originalProductsArray = [];
-
 // Filtra filtra productos según texto de búsqueda, por nombre y descripción del producto en tiempo real - Desafiate
 function filterProducts(searchText) {
-    let cleanedSearchText = searchText.trim();
-
-    if (cleanedSearchText === "") {
-        showProductsList(originalProductsArray);
-        return;
+    currentSearchText = searchText.trim();
+    applyAllFilters();
     }
 
-    let filteredProducts = originalProductsArray.filter(product => {
-        let nameMatch = product.name.toLowerCase().includes(cleanedSearchText.toLowerCase());
-        let descriptionMatch = product.description.toLowerCase().includes(cleanedSearchText.toLowerCase());
-        return nameMatch || descriptionMatch;
-    });
-
-    showProductsList(filteredProducts);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     showSpinner();
 
     // Obtiene el ID de la categoría desde el localStorage en lugar del valor fijo 101 - pauta 1
@@ -120,18 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Guarda el array original pora el bucador - Desafiate
             originalProductsArray = productsArray;
+            currentProductsArray = [...productsArray];
 
-            showProductsList(productsArray);
+            showProductsList();
 
             // Permite filtrado en tiempo real mientras el usuario escribe - Desafiate
             document.getElementById("searchInput").addEventListener("input", (e) => {
                 filterProducts(e.target.value);
             });
 
-
-            originalProductsArray = resultObj.data.products;
-            currentProductsArray = originalProductsArray;
-            showProductsList();
         } else {
             console.error("Error:", resultObj.data);
             document.getElementById("products-container").innerHTML = `
@@ -163,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
         minPrice= undefined; 
          maxPrice=undefined;  
 
-       showProductsList( ); 
+       applyAllFilters( ); 
      });
 
    document.getElementById("rangeFilterPriceBtn").addEventListener("click", function(){ 
@@ -183,6 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
             maxPrice=undefined;  
         }
 
-        showProductsList();  
+        applyAllFilters();  
    }); 
 }); 
