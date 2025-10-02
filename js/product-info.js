@@ -38,8 +38,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 item.innerHTML = `<img src="${imgSrc}" class="d-block w-100 img-fluid rounded" alt="Imagen del producto">`;
                 carouselInner.appendChild(item);
             });
+
+            mostrarRelacionados(product.relatedProducts);
         } else {
             document.getElementById("productTitle").textContent = "Error al cargar el producto";
         }
     });
 });
+
+function mostrarRelacionados(array) {
+    let container = document.getElementById("productosRelacionados");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    array.forEach(producto => {
+        let col = document.createElement("div");
+        col.classList.add("col-6", "col-md-4", "col-lg-3", "mb-3");
+
+        col.innerHTML = `
+        <div class="card h-100 productos-relacionados" data-id="${producto.id}" style="cursor:pointer">
+        <img src="${producto.image}" class="card-img-top" alt="${producto.name}">
+        <div class="card-body text-center">
+        <p class="card-text">${producto.name}</p>
+        </div>
+      </div>
+    `;
+
+    col.querySelector(".productos-relacionados").addEventListener("click", () => {
+        localStorage.setItem("productID", producto.id);
+        location.href = "product-info.html";
+    });
+
+    container.appendChild(col);
+    });
+}
