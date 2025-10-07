@@ -10,6 +10,33 @@
   <link href="css/font-awesome.min.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/styles.css" rel="stylesheet">
+  <style>
+    .stars {
+      color: orange;
+    }
+
+    /* Estilos para el nuevo selector de estrellas */
+    .rating {
+      display: inline-block;
+      direction: rtl; /* Para que las estrellas se seleccionen de derecha a izquierda */
+    }
+
+    .rating input {
+      display: none;
+    }
+
+    .rating label {
+      font-size: 25px;
+      color: lightgray;
+      cursor: pointer;
+    }
+
+    .rating input:checked ~ label,
+    .rating label:hover,
+    .rating label:hover ~ label {
+      color: orange;
+    }
+  </style>
 </head>
 
 <body>
@@ -31,13 +58,14 @@
             <a class="nav-link" href="sell.html">Vender</a>
           </li>
           <li class="nav-item dropdown">
-  <a class="nav-link dropdown-toggle" href="#" id="usuarioMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <span id="usuarioNombre"></span>
-  </a>
-  <ul class="dropdown-menu" aria-labelledby="usuarioMenu">
-    <li><a class="dropdown-item" href="#" id="logout">Cerrar sesión</a></li>
-  </ul>
-</li>
+            <a class="nav-link dropdown-toggle" href="#" id="usuarioMenu" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              <span id="usuarioNombre"></span>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="usuarioMenu">
+              <li><a class="dropdown-item" href="#" id="logout">Cerrar sesión</a></li>
+            </ul>
+          </li>
           <li class="nav-item">
           </li>
         </ul>
@@ -45,68 +73,98 @@
     </div>
   </nav>
   <main class="pb-5 container">
-  <!-- Título dinámico -->
-  <div class="text-center p-4">
-    <h2 id="productTitle">Cargando...</h2>
-  </div>
-
-  <div class="row">
-    <!-- Carrusel de imágenes -->
-    <div class="col-md-6">
-      <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner" id="carouselImages">
-          <!-- Las imágenes se cargarán con JavaScript -->
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Siguiente</span>
-        </button>
-      </div>
+    <div class="text-center p-4">
+      <h2 id="productTitle">Cargando...</h2>
     </div>
 
-    <!-- Detalles del producto -->
-    <div class="col-md-6">
-      <div class="card border-0">
-        <div class="card-body">
-          <h3 id="productPrice" class="mb-3"></h3>
-          <p class="card-text"><strong>Categoría:</strong> <span id="productCategory"></span></p>
-          <p class="card-text"><strong>Vendidos:</strong> <span id="productSoldCount"></span></p>
-          <p class="card-text" id="productDescription"></p>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner" id="carouselImages">
+            </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#productImagesCarousel"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+          </button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Sección de calificaciones y comentarios PAUTA 2 -->
-  <div class="row mt-5">
-    <div class="col-12">
-      <h4 class="mb-4">Comentarios y calificaciones</h4>
-      <div id="commentsContainer">
-        <!-- Los comentarios se cargarán dinámicamente con JavaScript -->
+      <div class="col-md-6">
+        <div class="card border-0">
+          <div class="card-body">
+            <h3 id="productPrice" class="mb-3"></h3>
+            <p class="card-text"><strong>Categoría:</strong> <span id="productCategory"></span></p>
+            <p class="card-text"><strong>Vendidos:</strong> <span id="productSoldCount"></span></p>
+            <p class="card-text" id="productDescription"></p>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+    <div class="row mt-5">
+      <div class="col-12">
+        <h4 class="mb-4">Comentarios</h4>
+        <div id="commentsContainer">
+          <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">UsuarioEjemplo</h5>
+              <small class="text-muted">2023-01-15</small>
+            </div>
+            <p class="mb-1">Un comentario de ejemplo sobre el producto.</p>
+            <div class="stars">
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
+              <span class="fa fa-star-o"></span> </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h5>Escribe tu comentario</h5>
+          <form>
+            <div class="mb-3">
+              <label for="commentText" class="form-label">Tu opinión</label>
+              <textarea class="form-control" id="commentText" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tu puntuación</label>
+              <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5" class="fa fa-star"></label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4" class="fa fa-star"></label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3" class="fa fa-star"></label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2" class="fa fa-star"></label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1" class="fa fa-star"></label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <hr>
-  <div class="mt-4">
-    <h4>Productos relacionados</h4>
-    <div class="row" id="productosRelacionados">
-
+    <div class="mt-4">
+      <h4>Productos relacionados</h4>
+      <div class="row" id="productosRelacionados">
+      </div>
     </div>
-  </div>
 
-</main>
+  </main>
 
   <footer class="text-muted">
     <div class="container">
       <p class="float-end">
         <a href="#">Volver arriba</a>
       </p>
-      <p>Este sitio forma parte de <a href="https://jovenesaprogramar.edu.uy/" target="_blank">Jovenes a Programar</a></p>
+      <p>Este sitio forma parte de <a href="https://jovenesaprogramar.edu.uy/" target="_blank">Jovenes a
+          Programar</a></p>
     </div>
   </footer>
   <div id="spinner-wrapper">
