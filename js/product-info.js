@@ -98,7 +98,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Cargar comentarios después de cargar el producto PAUTA 2
             loadProductComments(productID);
+            
+            // === DESAFÍO: Añadir comentario simulado ===
+const commentForm = document.getElementById("commentForm");
 
+if (commentForm) {
+    commentForm.addEventListener("submit", function(e) {
+        e.preventDefault(); // Evita que el formulario recargue la página
+
+        const commentText = document.getElementById("commentText").value.trim();
+        const ratingInput = document.querySelector('input[name="rating"]:checked');
+        const userName = localStorage.getItem("usuarioLogueado") || "Usuario anónimo";
+
+        // Validaciones
+        if (!commentText) {
+            alert("Por favor, escribe un comentario.");
+            return;
+        }
+        if (!ratingInput) {
+            alert("Por favor, selecciona una calificación.");
+            return;
+        }
+
+        // Crear nuevo comentario
+        const newComment = {
+            user: userName,
+            description: commentText,
+            score: parseInt(ratingInput.value),
+            dateTime: new Date().toLocaleDateString("es-ES", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            })
+        };
+
+        // Generar HTML del nuevo comentario
+        const stars = generateStars(newComment.score);
+
+        const newCommentHTML = `
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title mb-0">${newComment.user}</h6>
+                        <small class="text-muted">${newComment.dateTime}</small>
+                    </div>
+                    <div class="mb-2">
+                        ${stars}
+                    </div>
+                    <p class="card-text">${newComment.description}</p>
+                </div>
+            </div>
+        `;
+
+        // Insertar al inicio del contenedor
+        const commentsContainer = document.getElementById("commentsContainer");
+        if (commentsContainer) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = newCommentHTML;
+            commentsContainer.insertBefore(tempDiv.firstElementChild, commentsContainer.firstChild);
+        }
+
+        // Limpiar formulario
+        document.getElementById("commentText").value = "";
+        document.querySelectorAll('input[name="rating"]').forEach(input => input.checked = false);
+    });
+}
+            
             mostrarRelacionados(product.relatedProducts);
 
         } else {
@@ -133,4 +200,5 @@ function mostrarRelacionados(array) {
 
     container.appendChild(col);
     });
+
 }
