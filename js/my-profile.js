@@ -33,23 +33,24 @@ document.addEventListener("DOMContentLoaded", () => {
     emailInput.value = usuarioLogueado;
   }
 
-  // Muestra la vista previa de la imagen de perfil al seleccionarla
-  imagenInput.addEventListener("change", () => {
-    const file = imagenInput.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64Image = e.target.result;
-        // Muestra la vista previa de la imagen como fondo del div
-        const icon = previewImagen.querySelector("i");
-        if (icon) {
-            icon.style.display = "none"; // Oculta el ícono
-        }
-        previewImagen.style.backgroundImage = `url(${base64Image})`;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+  // DESAFÍO: Persistencia de la imagen de perfil
+  // Guardar imagen en localStorage
+imagenInput.addEventListener("change", () => {
+  const file = imagenInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64Image = e.target.result;
+      // Guardar en localStorage
+      localStorage.setItem("profileImage", base64Image);
+      // Mostrar vista previa
+      const icon = previewImagen.querySelector("i");
+      if (icon) icon.style.display = "none";
+      previewImagen.style.backgroundImage = `url(${base64Image})`;
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
   //Guardar datos localmente
   form.addEventListener("submit", (e) => {
@@ -65,6 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
     mensajeGuardado.style.display = "block";
     setTimeout(() => mensajeGuardado.style.display = "none", 2000);
   });
+
+  // Cargar imagen guardada
+const savedImage = localStorage.getItem("profileImage");
+if (savedImage) {
+  const icon = previewImagen.querySelector("i");
+  if (icon) icon.style.display = "none";
+  previewImagen.style.backgroundImage = `url(${savedImage})`;
+}
   
   if (typeof mostrarUsuarioEnNavbar === "function") {
     mostrarUsuarioEnNavbar();
