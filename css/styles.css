@@ -222,3 +222,135 @@ a.custom-card:hover {
     padding: 0 1rem !important;         /* Espacio en los costados (izquierda y derecha) */
     display: block !important;
 }
+
+/* Estilos del switch (interruptor) */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: 0.5s;
+}
+
+input {
+  display: none;
+}
+
+.display {
+  display: flex;
+align-items: center;
+}
+
+.toggle-label {
+  width: 90px;
+  height: 40px;
+  border-radius: 999px;
+  box-shadow: 10px 10px 30px rgba(97, 97, 97, 0.596) inset;
+  cursor: pointer;
+  position: relative;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 99px;
+  background: rgb(223, 223, 223);
+box-shadow: 0.3em 0.3em 0.6em rgba(0, 0, 0, 0.5), -0.3em -0.3em 0.6em rgba(0, 0, 0, 0.5) inset;
+position: absolute;
+top: 50%;
+left: 0%;
+transform: translate(10%, -50%);
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+}
+
+svg {
+  width: 30px;
+  padding: 7%;
+  position: absolute;
+}
+
+.sun {
+  color: #e79600;
+  margin-top: 0%;
+  opacity: 1;
+}
+
+.moon {
+  margin-top: -150%;
+  color: white;
+  opacity: 0;
+}
+
+input[type=checkbox]:checked + .display label {
+  box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.863) inset;
+}
+
+input[type=checkbox]:checked + .display label .circle {
+  left: 100%;
+  transform: translate(-110%, -50%);
+  background: #2e2e2e;
+}
+
+input[type=checkbox]:checked + .display label .circle .sun {
+  margin-top: 150%;
+  opacity: 0;
+}
+
+input[type=checkbox]:checked + .display label .circle .moon {
+  margin-top: 0%;
+  opacity: 1;
+}
+
+label:active .circle {
+  width: 75px;
+}
+
+/* 🌙 Modo Oscuro */
+.dark-mode {
+  background-color: #2e2e2e !important;
+  color: #ffffff !important;
+}
+
+.dark-mode .navbar,
+.dark-mode footer {
+  background-color: #3a3a3a !important;
+  color:#fff !important;
+}
+
+.dark-mode .custom-card,
+.dark-mode .custom-card .card-title,
+.dark-mode .custom-card .card-text,
+.dark-mode .custom-card small,
+.dark-mode .custom-card strong {
+    background-color: #3a3a3a !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .list-group-item {
+  background-color: #3a3a3a !important;
+  color: #fff;
+}
+
+.dark-mode .jumbotron {
+  background-image: url('../img/cover_back(oscuro).jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.dark-mode .album {
+  background-color: #000000 !important;
+}
+
+.dark-mode .card-body {
+  background-color: #3a3a3a;
+  color: #fff;
+}
+
+.dark-mode .btn.btn-light.btn-lg.btn-block {
+  background-color: #3a3a3a;
+  color: #fff;
+}

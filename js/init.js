@@ -114,3 +114,21 @@ e.preventDefault();
     });
   }
 });
+
+const toggle = document.getElementById("darkModeToggle");
+
+toggle.addEventListener("change", function() {
+  if (this.checked) {
+    document.body.classList.add("dark-mode");
+    localStorage.setItem("modoOscuro", "true");
+  } else {
+    document.body.classList.remove("dark-mode");
+    localStorage.setItem("modoOscuro", "false");
+  }
+});
+
+// Al cargar la página leer la preferencia
+if (localStorage.getItem("modoOscuro") === "true") {
+  toggle.checked = true;
+  document.body.classList.add("dark-mode");
+}
