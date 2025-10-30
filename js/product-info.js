@@ -56,6 +56,26 @@ function loadProductComments(productID) {
     });
 }
 
+// Guardar el producto en el carrito y redirigir a cart.html
+function comprarProducto(producto) {
+    
+    // Creo el objeto con la información necesaria del producto
+    const productoCarrito = {
+        nombre: producto.name,
+        costo: producto.cost,
+        moneda: producto.currency,
+        cantidad: 1, // Cantidad inicial
+        imagen: producto.images[0], // Primera imagen del producto
+        subtotal: producto.cost * 1 // Costo * cantidad
+    };
+
+    // Guardar en localStorage
+    localStorage.setItem('productoCarrito', JSON.stringify(productoCarrito));
+
+    // Redirigir al carrito
+    window.location.href = 'cart.html';
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     showSpinner();
 
@@ -167,6 +187,14 @@ if (commentForm) {
 }
             
             mostrarRelacionados(product.relatedProducts);
+
+            // Escuchar el clic en el botón Comprar
+            const btnComprar = document.getElementById('btnComprar');
+            if (btnComprar) {
+                btnComprar.addEventListener('click', function() {
+                    comprarProducto(product);
+                });
+            }
 
         } else {
             document.getElementById("productTitle").textContent = "Error al cargar el producto";
