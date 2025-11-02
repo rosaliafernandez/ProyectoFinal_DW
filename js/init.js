@@ -132,3 +132,16 @@ if (localStorage.getItem("modoOscuro") === "true") {
   toggle.checked = true;
   document.body.classList.add("dark-mode");
 }
+
+function actualizarBadgeCarrito() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const total = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+    const badge = document.getElementById("cartBadge");
+    if (!badge) return;
+
+    badge.textContent = total;
+    badge.style.display = total > 0 ? "inline-block" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", actualizarBadgeCarrito);

@@ -41,12 +41,15 @@
 </li>
 
 <!-- Ícono del carrito -->
-          <li class="nav-item">
-            <a class="nav-link" href="cart.html" aria-label="Carrito">
-              <i class="fa fa-shopping-cart"></i>
-            </a>
-          </li>
-          
+<li class="nav-item">
+  <a class="nav-link position-relative" href="cart.html" aria-label="Carrito">
+    <i class="fa fa-shopping-cart"></i>
+    <span id="cartBadge" class="badge bg-danger ms-1 position-absolute top-0 start-100 translate-middle rounded-pill">
+      0
+    </span>
+  </a>
+</li>
+
 <!-- Botón modo oscuro/modo claro -->
 <li class="nav-item">
     <input type="checkbox" id="darkModeToggle">

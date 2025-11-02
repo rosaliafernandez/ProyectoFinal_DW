@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector("main .container");
-    const productoCarrito = JSON.parse(localStorage.getItem("productoCarrito"));
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
     // Limpiamos el contenido
     container.innerHTML = "";
 
-    if (!productoCarrito) {
+    if (carrito.length === 0) {
         container.innerHTML = `
             <div class="alert alert-warning text-center mt-5" role="alert">
                 No hay productos en el carrito.
@@ -14,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Renderizar producto tal como está guardado (sin interacción)
-    container.innerHTML = `
+    let html = `
         <h2 class="text-center my-4">Carrito</h2>
         <p class="text-center mb-4">Aquí verás todos los productos que has añadido al carrito</p>
 
@@ -30,25 +29,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="d-flex align-items-center">
-                        <img src="${productoCarrito.imagen}" alt="${productoCarrito.nombre}" width="80" class="me-3 rounded">
-                        <span>${productoCarrito.nombre}</span>
-                    </td>
-                    <td>${productoCarrito.cantidad}</td>
-                    <td>${productoCarrito.moneda}</td>
-                    <td>${productoCarrito.costo}</td>
-                    <td>$${productoCarrito.subtotal}</td>
-                </tr>
+    `;
+
+    carrito.forEach(item => {
+        html += `
+            <tr>
+                <td class="d-flex align-items-center">
+                    <img src="${item.imagen}" alt="${item.nombre}" width="80" class="me-3 rounded">
+                    <span>${item.nombre}</span>
+                </td>
+                <td>${item.cantidad}</td>
+                <td>${item.moneda}</td>
+                <td>${item.costo}</td>
+                <td>-</td> <!-- Sin cálculos -->
+            </tr>
+        `;
+    });
+
+    html += `
             </tbody>
         </table>
 
         <!-- Footer con total -->
         <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-            <span>Total: $${productoCarrito.subtotal} ${productoCarrito.moneda}</span>
-            <select class="form-select form-select-sm w-auto" disabled>
-                <option value="UYU">${productoCarrito.moneda}</option>
+            <span>Total: -</span>
+            <select id="selectMoneda" class="form-select form-select-sm w-auto">
+                <option value="UYU">UYU</option>
+                <option value="USD">USD</option>
             </select>
         </div>
     `;
+
+    container.innerHTML = html;
 });
