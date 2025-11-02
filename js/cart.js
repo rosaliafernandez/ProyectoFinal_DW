@@ -31,17 +31,31 @@ document.addEventListener("DOMContentLoaded", () => {
             <tbody>
     `;
 
-    carrito.forEach(item => {
+    carrito.forEach((item, index) => {
+        // Cálculo inicial del subtotal
+        let subtotal = item.costo * item.cantidad;
+
         html += `
             <tr>
                 <td class="d-flex align-items-center">
                     <img src="${item.imagen}" alt="${item.nombre}" width="80" class="me-3 rounded">
                     <span>${item.nombre}</span>
                 </td>
-                <td>${item.cantidad}</td>
+                
+                <td>
+                    <input type="number" 
+                           class="form-control cart-quantity-input" 
+                           style="width: 80px; margin: auto;" 
+                           value="${item.cantidad}" 
+                           min="1" 
+                           data-costo="${item.costo}"
+                           data-target-id="subtotal-${index}">
+                </td>
+                
                 <td>${item.moneda}</td>
                 <td>${item.costo}</td>
-                <td>-</td> <!-- Sin cálculos -->
+                
+                <td id="subtotal-${index}">${subtotal}</td>
             </tr>
         `;
     });
@@ -50,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
             </tbody>
         </table>
 
-        <!-- Footer con total -->
         <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
             <span>Total: -</span>
             <select id="selectMoneda" class="form-select form-select-sm w-auto">
@@ -61,4 +74,29 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     container.innerHTML = html;
+
+    // Función para actualizar el subtotal de un item
+    function actualizarSubtotal(inputElement) {
+        const cantidad = inputElement.value;
+        const costo = inputElement.dataset.costo;
+        const targetId = inputElement.dataset.targetId;
+        
+        const subtotalElement = document.getElementById(targetId);
+        
+        if (cantidad > 0) {
+            const nuevoSubtotal = (cantidad * costo);
+            subtotalElement.textContent = nuevoSubtotal;
+        } else {
+            inputElement.value = 1;
+            subtotalElement.textContent = costo;
+        }
+    }
+
+    // Asignar listeners a todos los inputs de cantidad
+    const inputsCantidad = document.querySelectorAll('.cart-quantity-input');
+    inputsCantidad.forEach(input => {
+        input.addEventListener('input', () => {
+            actualizarSubtotal(input);
+        });
+    });
 });
