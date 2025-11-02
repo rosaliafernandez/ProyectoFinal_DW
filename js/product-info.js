@@ -58,22 +58,29 @@ function loadProductComments(productID) {
 
 // Guardar el producto en el carrito y redirigir a cart.html
 function comprarProducto(producto) {
-    
-    // Creo el objeto con la información necesaria del producto
-    const productoCarrito = {
-        nombre: producto.name,
-        costo: producto.cost,
-        moneda: producto.currency,
-        cantidad: 1, // Cantidad inicial
-        imagen: producto.images[0], // Primera imagen del producto
-        subtotal: producto.cost * 1 // Costo * cantidad
-    };
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    let index = carrito.findIndex(item => item.nombre === producto.name);
 
-    // Guardar en localStorage
-    localStorage.setItem('productoCarrito', JSON.stringify(productoCarrito));
+        if (index !== -1) {
+        // Si ya existe en el carrito, sumo uno
+        carrito[index].cantidad += 1;
+    } else {
+        // Si no existe, lo agrego con cantidad 1
+        carrito.push({
+            nombre: producto.name,
+            costo: producto.cost,
+            moneda: producto.currency,
+            cantidad: 1,
+            imagen: producto.images[0],
+            subtotal: producto.cost * 1
+        });
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    actualizarBadgeCarrito();
 
     // Redirigir al carrito
-    window.location.href = 'cart.html';
+    window.location.href = "cart.html";
 }
 
 document.addEventListener("DOMContentLoaded", function () {

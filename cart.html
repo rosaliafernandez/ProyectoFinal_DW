@@ -39,6 +39,16 @@
   </ul>
 </li>
 
+<!-- Ícono del carrito -->
+<li class="nav-item">
+  <a class="nav-link position-relative" href="cart.html" aria-label="Carrito">
+    <i class="fa fa-shopping-cart"></i>
+    <span id="cartBadge" class="badge bg-danger ms-1 position-absolute top-0 start-100 translate-middle rounded-pill">
+      0
+    </span>
+  </a>
+</li>
+
 <!-- Botón modo oscuro/modo claro -->
 <li class="nav-item">
     <input type="checkbox" id="darkModeToggle">
@@ -65,10 +75,9 @@
     </div>
   </nav>
   <main>
-    <div class="container">
-      <div class="alert alert-danger text-center" role="alert">
-        <h4 class="alert-heading">Funcionalidad en desarrollo</h4>
-      </div>
+    <div class="container my-4">
+      <h2>Carrito</h2>
+    <div id="cartContent"></div>
     </div>
   </main>
   <footer class="text-muted">
