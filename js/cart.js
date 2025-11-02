@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     carrito.forEach((item, index) => {
-        // Cálculo inicial del subtotal
         let subtotal = item.costo * item.cantidad;
 
         html += `
@@ -65,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </table>
 
         <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-            <span>Total: -</span>
+            <span id="totalGeneral">Total: -</span>
             <select id="selectMoneda" class="form-select form-select-sm w-auto">
                 <option value="UYU">UYU</option>
                 <option value="USD">USD</option>
@@ -75,14 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     container.innerHTML = html;
 
-    // Función para actualizar el subtotal de un item
+    // Función para actualizar el subtotal
     function actualizarSubtotal(inputElement) {
         const cantidad = inputElement.value;
         const costo = inputElement.dataset.costo;
         const targetId = inputElement.dataset.targetId;
         
         const subtotalElement = document.getElementById(targetId);
-        
+
         if (cantidad > 0) {
             const nuevoSubtotal = (cantidad * costo);
             subtotalElement.textContent = nuevoSubtotal;
@@ -92,11 +91,46 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Asignar listeners a todos los inputs de cantidad
+    // *** TASA DE CONVERSIÓN ***
+    const USD_TO_UYU = 40;
+
+    // Función de total + conversión
+    function calcularTotal() {
+        const monedaSeleccionada = document.getElementById("selectMoneda").value;
+        let total = 0;
+
+        carrito.forEach((item, index) => {
+            const subtotalActual = parseFloat(document.getElementById(`subtotal-${index}`).textContent);
+            let subtotalConvertido = subtotalActual;
+
+            // UYU → USD
+            if (monedaSeleccionada === "USD" && item.moneda === "UYU") {
+                subtotalConvertido = subtotalActual / USD_TO_UYU;
+            }
+
+            // USD → UYU
+            if (monedaSeleccionada === "UYU" && item.moneda === "USD") {
+                subtotalConvertido = subtotalActual * USD_TO_UYU;
+            }
+
+            total += subtotalConvertido;
+        });
+
+        document.getElementById("totalGeneral").textContent = `Total: ${total.toFixed(2)} ${monedaSeleccionada}`;
+    }
+
+    // Listeners cantidad
     const inputsCantidad = document.querySelectorAll('.cart-quantity-input');
     inputsCantidad.forEach(input => {
         input.addEventListener('input', () => {
             actualizarSubtotal(input);
+            calcularTotal();
         });
     });
+
+    // Cambio moneda
+    document.getElementById("selectMoneda").addEventListener("change", calcularTotal);
+
+    // Calcular al cargar
+    calcularTotal();
 });
