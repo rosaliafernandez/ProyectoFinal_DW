@@ -62,14 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     html += `
             </tbody>
         </table>
-
-        <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-            <span id="totalGeneral">Total: -</span>
-            <select id="selectMoneda" class="form-select form-select-sm w-auto">
-                <option value="UYU">UYU</option>
-                <option value="USD">USD</option>
-            </select>
-        </div>
     `;
 
     container.innerHTML = html;
