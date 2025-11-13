@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const container = document.querySelector("main .container");
+    const cartContent = document.getElementById("cartContent");
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
     // Limpiamos el contenido
-    container.innerHTML = "";
+    cartContent.innerHTML = "";
 
     if (carrito.length === 0) {
-        container.innerHTML = `
+        cartContent.innerHTML = `
             <div class="alert alert-warning text-center mt-5" role="alert">
                 No hay productos en el carrito.
             </div>
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </table>
     `;
 
-    container.innerHTML = html;
+    cartContent.innerHTML = html;
 
     // Función para actualizar el subtotal
     function actualizarSubtotal(inputElement) {
@@ -89,10 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Función de total + conversión
     function calcularTotal() {
         const monedaSeleccionada = document.getElementById("selectMoneda").value;
-        let total = 0;
+        let subtotalProductos = 0;
 
         carrito.forEach((item, index) => {
-            const subtotalActual = parseFloat(document.getElementById(`subtotal-${index}`).textContent);
+            const subtotalElement = document.getElementById(`subtotal-${index}`);
+            if (!subtotalElement) return; 
+
+            const subtotalActual = parseFloat(subtotalElement.textContent);
             let subtotalConvertido = subtotalActual;
 
             // UYU → USD
@@ -105,10 +108,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 subtotalConvertido = subtotalActual * USD_TO_UYU;
             }
 
-            total += subtotalConvertido;
+            subtotalProductos += subtotalConvertido;
         });
 
-        document.getElementById("totalGeneral").textContent = `Total: ${total.toFixed(2)} ${monedaSeleccionada}`;
+        const envioRadio = document.querySelector('input[name="tipoEnvio"]:checked');
+        const porcentajeValor = envioRadio ? parseFloat(envioRadio.value) : 0;
+        const porcentajeDecimal = porcentajeValor / 100;
+
+        const costoEnvio = subtotalProductos * porcentajeDecimal;
+        const totalCompra = subtotalProductos + costoEnvio;
+
+        const simbolo = monedaSeleccionada === "USD" ? "US$" : "$U";
+
+        document.getElementById("subtotalCosto").textContent = `${simbolo} ${subtotalProductos.toFixed(2)}`;
+        document.getElementById("costoEnvio").textContent = `${simbolo} ${costoEnvio.toFixed(2)}`;
+        document.getElementById("porcentajeEnvio").textContent = `(${porcentajeValor}%)`;
+        document.getElementById("totalGeneral").textContent = `Total: ${simbolo} ${totalCompra.toFixed(2)}`;
     }
 
     // Listeners cantidad
@@ -122,6 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cambio moneda
     document.getElementById("selectMoneda").addEventListener("change", calcularTotal);
+
+    const radiosEnvio = document.querySelectorAll('input[name="tipoEnvio"]');
+    radiosEnvio.forEach(radio => {
+        radio.addEventListener('change', calcularTotal);
+    });
 
     // Calcular al cargar
     calcularTotal();
