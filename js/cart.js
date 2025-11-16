@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <th>Moneda</th>
                     <th>Precio</th>
                     <th>Subtotal</th>
+                    <th>Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${item.costo}</td>
                 
                 <td id="subtotal-${index}">${subtotal}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger delete-btn" data-index="${index}">
+                         Eliminar
+                    </button>
+                 </td>
             </tr>
         `;
     });
@@ -146,6 +152,22 @@ document.addEventListener("DOMContentLoaded", () => {
     // Calcular al cargar
     calcularTotal();
 
+    // DESAFIATE - Eliminar producto del carrito
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("delete-btn")) {
+            const index = parseInt(e.target.dataset.index);
+            const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+            
+            if (confirm(`¿Seguro que deseas eliminar "${carrito[index].nombre}" del carrito?`)) {
+                carrito.splice(index, 1);
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+                
+                // Recargamos la página para actualizar tabla, totales y badge
+                location.reload();
+            }
+        }
+    });
+    
     // PAUTA 4: Validaciones y botón "Finalizar compra" 
     document.getElementById("finalizarCompra").addEventListener("click", () => {
     // Validamos los campos de dirección de envío
