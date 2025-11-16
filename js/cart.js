@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <th>Moneda</th>
                     <th>Precio</th>
                     <th>Subtotal</th>
+                    <th>Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +56,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${item.costo}</td>
                 
                 <td id="subtotal-${index}">${subtotal}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger delete-btn" data-index="${index}">
+                         Eliminar
+                    </button>
+                 </td>
             </tr>
         `;
     });
@@ -145,4 +151,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Calcular al cargar
     calcularTotal();
+
+    // DESAFIATE - Eliminar producto del carrito
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("delete-btn")) {
+            const index = parseInt(e.target.dataset.index);
+            const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+            
+            if (confirm(`¿Seguro que deseas eliminar "${carrito[index].nombre}" del carrito?`)) {
+                carrito.splice(index, 1);
+                localStorage.setItem("carrito", JSON.stringify(carrito));
+                
+                // Recargamos la página para actualizar tabla, totales y badge
+                location.reload();
+            }
+        }
+    });
+    
+    // PAUTA 4: Validaciones y botón "Finalizar compra" 
+    document.getElementById("finalizarCompra").addEventListener("click", () => {
+    // Validamos los campos de dirección de envío
+    const depto = document.getElementById("departamento").value.trim();
+    const localidad = document.getElementById("localidad").value.trim();
+    const calle = document.getElementById("calle").value.trim();
+    const numero = document.getElementById("numero").value.trim();
+    
+
+    if (!depto || !localidad || !calle || !numero) {
+        alert("Por favor, completa todos los campos obligatorios de la dirección de envío.");
+        return;
+    }
+
+    // Validamos el tipo de envío
+    const tipoEnvio = document.querySelector('input[name="tipoEnvio"]:checked');
+    if (!tipoEnvio) {
+        alert("Por favor, selecciona un tipo de envío.");
+        return;
+    }
+
+    // Validamos que todos los productos tengan cantidad > 0
+    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
+    const todasCantidadesValidas = carritoActual.every(item => item.cantidad > 0);
+    if (!todasCantidadesValidas) {
+        alert("La cantidad de cada producto debe ser mayor a 0.");
+        return;
+    }
+
+    // Validamos la forma de pago
+    const formaPago = document.querySelector('input[name="formaPago"]:checked');
+    if (!formaPago) {
+        alert("Por favor, selecciona una forma de pago.");
+        return;
+    }
+
+    alert("¡Compra finalizada con éxito! Gracias por tu compra.");
+    
+    });
+    
 });
