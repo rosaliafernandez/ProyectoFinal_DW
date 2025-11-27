@@ -14,27 +14,51 @@ document.addEventListener("DOMContentLoaded", function() {
     const mensajeError = document.getElementById("mensajeError");
 
     // Escuchar el submit del formulario
-    loginForm.addEventListener("submit", function(e) {
+    loginForm.addEventListener("submit", async function(e) {
         e.preventDefault(); // Evitar que el form se envíe automáticamente
 
-        // Validar ambos campos
-        const validarUsuario = usuarioInput.value.trim() !== "";
-        const validarContrasena = contrasenaInput.value.trim() !== "";
+        const usuario = usuarioInput.value.trim();
+        const contrasena = contrasenaInput.value.trim();
 
-        // Si ambos campos están llenos, crear sesión y redirigir
-        if (validarUsuario && validarContrasena) {
-            // Ocultar mensaje de error por si estaba visible
-            mensajeError.style.display = "none";
-            
-            // Guardar la sesión y datos del usuario
-            localStorage.setItem('sesionActiva', 'true');
-            localStorage.setItem('usuarioLogueado', usuarioInput.value.trim());
-            localStorage.setItem('fechaLogin', new Date().toISOString());
-            
-            // Redirigir a la página principal
-            window.location.href = "index.html";
-        } else {
-            // Mostrar mensaje de error
+        // Validar que no estén vacíos
+        if (!usuario || !contrasena) {
+            mensajeError.textContent = "Debe completar ambos campos.";
+            mensajeError.style.display = "block";
+            return;
+        }
+
+        try {
+            // Hacer fetch al backend
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ usuario, contrasena })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Ocultar mensaje de error
+                mensajeError.style.display = "none";
+                
+                // Guardar token y datos del usuario
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('sesionActiva', 'true');
+                localStorage.setItem('usuarioLogueado', data.usuario);
+                localStorage.setItem('fechaLogin', new Date().toISOString());
+                
+                // Redirigir a la página principal
+                window.location.href = "index.html";
+            } else {
+                // Mostrar error del servidor
+                mensajeError.textContent = data.message;
+                mensajeError.style.display = "block";
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mensajeError.textContent = "Error al conectar con el servidor. ¿Está corriendo el backend?";
             mensajeError.style.display = "block";
         }
     });
