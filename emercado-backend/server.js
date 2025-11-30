@@ -5,17 +5,32 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = 3000;
 
+// Clave secreta para JWT
+const SECRET_KEY = 'clave_secreta_emercado_2025';
+
 app.use(cors());
 app.use(express.json());
 
+// Middleware de verificación de token
+const verificarToken = (req, res, next) => {
+  const token = req.header('access-token');
+  if (!token) return res.status(403).json({ message: 'Acceso denegado' });
+  try {
+    jwt.verify(token, SECRET_KEY);
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token inválido' });
+  }
+};
+
 // Serviendo los JSONs del API de e_mercado
-app.use('/cats', express.static(path.join(__dirname, '../emercado-api/cats')));
-app.use('/cats_products', express.static(path.join(__dirname, '../emercado-api/cats_products')));
-app.use('/products', express.static(path.join(__dirname, '../emercado-api/products')));
-app.use('/products_comments', express.static(path.join(__dirname, '../emercado-api/products_comments')));
-app.use('/user_cart', express.static(path.join(__dirname, '../emercado-api/user_cart')));
-app.use('/sell', express.static(path.join(__dirname, '../emercado-api/sell')));
-app.use('/cart', express.static(path.join(__dirname, '../emercado-api/cart')));
+app.use('/cats', verificarToken, express.static(path.join(__dirname, '../emercado-api/cats')));
+app.use('/cats_products', verificarToken, express.static(path.join(__dirname, '../emercado-api/cats_products')));
+app.use('/products', verificarToken, express.static(path.join(__dirname, '../emercado-api/products')));
+app.use('/products_comments', verificarToken, express.static(path.join(__dirname, '../emercado-api/products_comments')));
+app.use('/user_cart', verificarToken, express.static(path.join(__dirname, '../emercado-api/user_cart')));
+app.use('/sell', verificarToken, express.static(path.join(__dirname, '../emercado-api/sell')));
+app.use('/cart', verificarToken, express.static(path.join(__dirname, '../emercado-api/cart')));
 
 // LOGIN CON JWT
 
@@ -41,7 +56,7 @@ app.post('/login', (req, res) => {
     // Generar token JWT
     const token = jwt.sign(
       { usuario: usuarioEncontrado.usuario }, 
-      'clave_secreta_emercado_2025', 
+      SECRET_KEY, 
       { expiresIn: '24h' }
     );
     
